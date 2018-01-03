@@ -13,8 +13,11 @@ public class Server {
         ServerSocket serverSocket = null;
 
         try {
+            // Create Server socket
             serverSocket = new ServerSocket(serverPort);
             ExecutorService executor = Executors.newCachedThreadPool();
+
+            // Waiting for new client
             while (true) {
                 Socket socket = serverSocket.accept();
                 executor.execute(new ServerRunnable(socket));
