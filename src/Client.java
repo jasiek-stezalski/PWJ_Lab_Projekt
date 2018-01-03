@@ -29,25 +29,23 @@ public class Client {
 
             sockIn = socket.getInputStream();
             sockOut = socket.getOutputStream();
-//
-//            //*pobieranie z servera
+
             Scanner scanner = new Scanner(socket.getInputStream());
-//            System.out.println("Podaj dowolna liczbe");
-//            int number = sc.nextInt();
-//            // *do wysylania na server
 
             String temp;
-            while (scanner.hasNext()) {
+            while (true) {
+                while (scanner.hasNext()) {
+                    temp = scanner.nextLine();
+                    if(temp.equals("stop"))
+                        break;
+                    System.out.println(temp);
+                }
+                String answer = sc.nextLine();
+                PrintStream printStream = new PrintStream(socket.getOutputStream());
+                printStream.println(answer);
                 temp = scanner.nextLine();
-                if(temp.equals("exit"))
-                    break;
                 System.out.println(temp);
             }
-            String answer = sc.nextLine();
-            PrintStream printStream = new PrintStream(socket.getOutputStream());
-            printStream.println(answer);
-            temp = scanner.nextLine();
-            System.out.println(temp);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }catch (ConnectException e) {
