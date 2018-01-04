@@ -1,7 +1,4 @@
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -14,48 +11,42 @@ public class Client {
 
     public static void main(String[] args) throws IOException {
 
-        Socket socket = null;
-        OutputStream sockOut = null;
-        InputStream sockIn = null;
-        PrintStream output = null;
-
-        Scanner sc = new Scanner(System.in);
 
         try {
             // Getting localhost
             InetAddress serverHost = InetAddress.getLocalHost();
             // Attempt to connect to the server
-            socket = new Socket(serverHost, serverPort);
+            Socket socket = new Socket(serverHost, serverPort);
 
-            sockIn = socket.getInputStream();
-            sockOut = socket.getOutputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintStream out = new PrintStream(socket.getOutputStream());
 
-            Scanner scanner = new Scanner(socket.getInputStream());
-
-            String temp;
+            Scanner scanner = new Scanner(System.in);
+            String temp = null;
             while (true) {
-                while (scanner.hasNext()) {
-                    temp = scanner.nextLine();
-                    if(temp.equals("stop"))
-                        break;
+                while (!(temp = in.readLine()).equals("stop")) {
                     System.out.println(temp);
                 }
-                String answer = sc.nextLine();
-                PrintStream printStream = new PrintStream(socket.getOutputStream());
-                printStream.println(answer);
-                temp = scanner.nextLine();
-                System.out.println(temp);
+                String answer = null;
+                do {
+                    answer = scanner.nextLine();
+                } while (!answer.equals("1") && !answer.equals("2") && !answer.equals("3") && !answer.equals("4"));
+                out.println(answer);
+                temp = in.readLine();
+                if (temp.equals("exit"))
+                    break;
             }
+            scanner.close();
+            out.close();
+            in.close();
+            socket.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
-        }catch (ConnectException e) {
+        } catch (ConnectException e) {
             System.err.println(e);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            sockOut.close();
-            sockIn.close();
-            socket.close();
             System.out.println("Connection closed");
         }
 

@@ -80,21 +80,31 @@ public class JDBC {
     }
 
     private void createTables() {
-        if (executeUpdate("CREATE TABLE bazapytan (idPytania INT NOT NULL, tresc varchar(100) NOT NULL, odpowiedz varchar(20) NOT NULL);") == 0) {
+
+
+        if (executeUpdate("CREATE TABLE bazapytan (idPytania int(10) NOT NULL, tresc varchar(100) NOT NULL, " +
+                "odp1 varchar(10) NOT NULL, odp2 varchar(10) NOT NULL, odp3 varchar(10) NOT NULL, odp4 varchar(10) NOT NULL);") == 0) {
+            executeUpdate("ALTER TABLE bazapytan ADD PRIMARY KEY (idPytania);");
             System.out.println("Tabela bazaPytan utworzona");
             String sql = "INSERT INTO bazaPytan VALUES" +
-                    "(1, 'pytanie nr 1', '1.odpa'), " +
-                    "(1, 'pytanie nr 1', '2.odpb'), " +
-                    "(1, 'pytanie nr 1', '3.odpc')," +
-                    "(1, 'pytanie nr 1', '4.odpd')," +
-                    "(2, 'pytanie nr 2', '1.odpa')," +
-                    "(2, 'pytanie nr 2', '2.odpb')," +
-                    "(2, 'pytanie nr 2', '3.odpc')," +
-                    "(2, 'pytanie nr 2', '4.odpd');";
+                    "(1, 'pytanie nr 1', '1.odpa', '2.odpb', '3.odpc', '4.odpd'), " +
+                    "(2, 'pytanie nr 2', '1.odpa', '2.odpb', '3.odpc', '4.odpd');";
             executeUpdate(sql);
             System.out.println("Tabela bazaPytan wypelniona danymi");
         } else
-            System.out.println("Tabela bazaPytanjuz istnieje!");
+            System.out.println("Tabela bazaPytan juz istnieje!");
+
+        if (executeUpdate("CREATE TABLE bazaodpowiedzi (idKlienta varchar(256) NOT NULL, idPytania int NOT NULL, odpowiedz varchar(20) NOT NULL);") ==0) {
+            System.out.println("Tabela bazaOdpowiedzi utworzona");
+        } else
+            System.out.println("Tabela bazaOdpowiedzi juz istnieje!");
+
+        if (executeUpdate("CREATE TABLE wyniki (idPytania int(10) NOT NULL,odp1 int(10) NOT NULL,odp2 int(10) NOT NULL,odp3 int(10) NOT NULL,odp4 int(10) NOT NULL);") ==0) {
+            executeUpdate("ALTER TABLE wyniki ADD PRIMARY KEY (idPytania);");
+            System.out.println("Tabela wyniki utworzona");
+        } else
+            System.out.println("Tabela wyniki juz istnieje!");
+
     }
 
     public ResultSet getBazaPytan() {
@@ -120,20 +130,9 @@ public class JDBC {
 
     }
 
-    public void printBazaPytan(ResultSet rs) {
-        try {
-            while (rs.next()) {
-                int idPytania = rs.getInt("idPytania");
-                String tresc = rs.getString("tresc");
-                String odpowiedz = rs.getString("odpowiedz");
-
-                System.out.print("IdPytania: " + idPytania);
-                System.out.print(", Tresc: " + tresc);
-                System.out.println(", Odpowiedz: " + odpowiedz);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public void insertOdpowiedz(String idKlienta, int idPytania, String odpowiedz) {
+        String sql = "INSERT INTO bazaOdpowiedzi VALUES('"+ idKlienta +"',"+ idPytania +",'"+ odpowiedz +"');";
+        executeUpdate(sql);
     }
 
     public void closeConnection() {

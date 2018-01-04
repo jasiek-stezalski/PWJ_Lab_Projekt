@@ -1,16 +1,16 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Scanner;
+import java.util.UUID;
 
 public class ServerRunnable implements Runnable {
 
     private Socket socket;
     private JDBC dataBase;
-
 
 
     public ServerRunnable(Socket socket, JDBC dataBase) {
@@ -20,42 +20,42 @@ public class ServerRunnable implements Runnable {
 
     @Override
     public void run() {
-        ResultSet rs = dataBase.getBazaPytan();
-        int numRows = 0;
         try {
-            rs.last();
-            numRows = rs.getRow();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        numRows /= 4;
-        try {
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintStream out = new PrintStream(socket.getOutputStream());
 
-            PrintStream printStream = new PrintStream(socket.getOutputStream());
-            for (int i=1; i<=numRows; i++) {
+            String idKlienta = String.valueOf(UUID.randomUUID());
+            int idPytania = 0;
+
+            ResultSet rs = dataBase.getBazaPytan();
+            rs.last();
+            int numRows = rs.getRow();
+
+            for (int i = 1; i <= numRows; i++) {
                 rs = dataBase.getPytanie(i);
-                int counter = 0;
                 try {
                     while (rs.next()) {
-                        if (counter == 0){
-                            printStream.println(rs.getString("tresc"));
-                            counter++;
-                        }
-                        printStream.println(rs.getString("odpowiedz"));
+                        idPytania = rs.getInt("idPytania");
+                        out.println(rs.getString("tresc"));
+                        out.println(rs.getString("odp1"));
+                        out.println(rs.getString("odp2"));
+                        out.println(rs.getString("odp3"));
+                        out.println(rs.getString("odp4"));
                     }
-                    printStream.println("stop");
-                    Scanner scanner = new Scanner(socket.getInputStream());
-                    String answer = scanner.nextLine();
-
+                    out.println("stop");
+                    String answer = in.readLine();
+                    dataBase.insertOdpowiedz(idKlienta, idPytania, answer);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-
+            out.println("exit");
+            out.close();
+            in.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 }
