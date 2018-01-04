@@ -36,6 +36,13 @@ public class Client {
                 if (temp.equals("exit"))
                     break;
             }
+
+            while (true) {
+                temp = in.readLine();
+                if (temp.equals("exit"))
+                    break;
+                System.out.println(temp);
+            }
             scanner.close();
             out.close();
             in.close();

@@ -45,9 +45,27 @@ public class ServerRunnable implements Runnable {
                     out.println("stop");
                     String answer = in.readLine();
                     dataBase.insertOdpowiedz(idKlienta, idPytania, answer);
+                    dataBase.updateWyniki(idPytania, answer);
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+            }
+            out.println("exit");
+
+            out.println("Wyniki Ankiety: ");
+            ResultSet rs2 = dataBase.getWyniki();
+
+            while (rs2.next()) {
+                int counter = 0;
+                counter += Integer.parseInt(rs2.getString("odp1"));
+                counter += Integer.parseInt(rs2.getString("odp2"));
+                counter += Integer.parseInt(rs2.getString("odp3"));
+                counter += Integer.parseInt(rs2.getString("odp4"));
+                out.println("Pytanie nr" + rs2.getInt("idPytania"));
+                out.println("Odpowiedz 1: " + Integer.parseInt(rs2.getString("odp1"))*100/counter + "%");
+                out.println("Odpowiedz 2: " + Integer.parseInt(rs2.getString("odp2"))*100/counter + "%");
+                out.println("Odpowiedz 3: " + Integer.parseInt(rs2.getString("odp3"))*100/counter + "%");
+                out.println("Odpowiedz 4: " + Integer.parseInt(rs2.getString("odp4"))*100/counter + "%");
             }
             out.println("exit");
             out.close();
