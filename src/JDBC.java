@@ -87,8 +87,10 @@ public class JDBC {
             executeUpdate("ALTER TABLE bazapytan ADD PRIMARY KEY (idPytania);");
             System.out.println("Tabela bazaPytan utworzona");
             String sql = "INSERT INTO bazaPytan VALUES" +
-                    "(1, 'pytanie nr 1', '1.odpa', '2.odpb', '3.odpc', '4.odpd'), " +
-                    "(2, 'pytanie nr 2', '1.odpa', '2.odpb', '3.odpc', '4.odpd');";
+                    "(1, 'tresc pytania nr 1', 'A.odp', 'B.odp', 'C.odp', 'D.odp'), " +
+                    "(2, 'tresc pytania nr 2', 'A.odp', 'B.odp', 'C.odp', 'D.odp'), " +
+                    "(3, 'tresc pytania nr 3', 'A.odp', 'B.odp', 'C.odp', 'D.odp'), " +
+                    "(4, 'tresc pytania nr 4', 'A.odp', 'B.odp', 'C.odp', 'D.odp');";
             executeUpdate(sql);
             System.out.println("Tabela bazaPytan wypelniona danymi");
         } else
@@ -104,7 +106,9 @@ public class JDBC {
             System.out.println("Tabela wyniki utworzona");
             String sql = "INSERT INTO wyniki VALUES" +
                     "(1, 0, 0, 0, 0), " +
-                    "(2, 0, 0, 0, 0);";
+                    "(2, 0, 0, 0, 0), " +
+                    "(3, 0, 0, 0, 0), " +
+                    "(4, 0, 0, 0, 0);";
             executeUpdate(sql);
             System.out.println("Tabela wyniki wypelniona danymi");
         } else
