@@ -10,7 +10,7 @@ public class JDBC {
     }
 
     public void connect() {
-        if (chechDriver("com.mysql.jdbc.Driver"))
+        if (checkDriver("com.mysql.jdbc.Driver"))
             System.out.println("... OK");
         else
             System.exit(1);
@@ -33,7 +33,7 @@ public class JDBC {
         }
     }
 
-    private boolean chechDriver(String driver) {
+    private boolean checkDriver(String driver) {
         System.out.print("Sprawdzanie sterownika bazy danych ");
         try {
             Class.forName(driver).newInstance();
@@ -80,17 +80,15 @@ public class JDBC {
     }
 
     private void createTables() {
-
-
         if (executeUpdate("CREATE TABLE bazapytan (idPytania int(10) NOT NULL, tresc varchar(100) NOT NULL, " +
-                "odp1 varchar(10) NOT NULL, odp2 varchar(10) NOT NULL, odp3 varchar(10) NOT NULL, odp4 varchar(10) NOT NULL);") == 0) {
+                "odpA varchar(20) NOT NULL, odpB varchar(20) NOT NULL, odpC varchar(20) NOT NULL, odpD varchar(20) NOT NULL);") == 0) {
             executeUpdate("ALTER TABLE bazapytan ADD PRIMARY KEY (idPytania);");
             System.out.println("Tabela bazaPytan utworzona");
             String sql = "INSERT INTO bazaPytan VALUES" +
-                    "(1, 'tresc pytania nr 1', 'A.odp', 'B.odp', 'C.odp', 'D.odp'), " +
-                    "(2, 'tresc pytania nr 2', 'A.odp', 'B.odp', 'C.odp', 'D.odp'), " +
-                    "(3, 'tresc pytania nr 3', 'A.odp', 'B.odp', 'C.odp', 'D.odp'), " +
-                    "(4, 'tresc pytania nr 4', 'A.odp', 'B.odp', 'C.odp', 'D.odp');";
+                    "(1, 'Na jakiej uczelni studiujesz?', 'A. PK', 'B. AGH', 'C. UJ', 'D. UEK'), " +
+                    "(2, 'Jaki jest twoj ulubiony jezyk programowania?', 'A. Java', 'B. C++', 'C. Python', 'D. Javascript'), " +
+                    "(3, 'Jak czesto programujesz?', 'A. 4-5 h dziennie', 'B. 1h dziennie', 'C. 1h tygodniowo', 'D. 1h miesiecznie'), " +
+                    "(4, 'Jak oceniasz ta ankiete?', 'A. Bardzo dobra', 'B. Dobra', 'C. Swietna', 'D. Rewelacyjna');";
             executeUpdate(sql);
             System.out.println("Tabela bazaPytan wypelniona danymi");
         } else
@@ -101,7 +99,7 @@ public class JDBC {
         } else
             System.out.println("Tabela bazaOdpowiedzi juz istnieje!");
 
-        if (executeUpdate("CREATE TABLE wyniki (idPytania int(10) NOT NULL,odp1 int(10) NOT NULL,odp2 int(10) NOT NULL,odp3 int(10) NOT NULL,odp4 int(10) NOT NULL);") == 0) {
+        if (executeUpdate("CREATE TABLE wyniki (idPytania int(10) NOT NULL,odpA int(10) NOT NULL,odpB int(10) NOT NULL,odpC int(10) NOT NULL,odpD int(10) NOT NULL);") == 0) {
             executeUpdate("ALTER TABLE wyniki ADD PRIMARY KEY (idPytania);");
             System.out.println("Tabela wyniki utworzona");
             String sql = "INSERT INTO wyniki VALUES" +
@@ -147,7 +145,17 @@ public class JDBC {
             e.printStackTrace();
         }
         return rs;
+    }
 
+    public ResultSet getOdpowiedzi(String idKlienta) {
+        String sql = "Select odpowiedz from bazaOdpowiedzi where idKlienta ='" + idKlienta + "'";
+        ResultSet rs = null;
+        try {
+            rs = st.executeQuery(sql);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rs;
     }
 
     public void insertOdpowiedz(String idKlienta, int idPytania, String odpowiedz) {
@@ -175,7 +183,7 @@ public class JDBC {
     }
 
     public void closeConnection() {
-        System.out.print("\nZamykanie polaczenia z baza:");
+        System.out.print("\nZamykanie polaczenia z baza ...");
         try {
             st.close();
             connection.close();
