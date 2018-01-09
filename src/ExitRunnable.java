@@ -12,9 +12,9 @@ public class ExitRunnable implements Runnable {
 
     @Override
     public void run() {
-        Scanner odczyt = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         while (true) {
-            if (odczyt.nextLine().equals("exit")){
+            if (in.nextLine().equals("exit")){
                 break;
             }
         }

@@ -17,15 +17,15 @@ public class JDBC {
 
         connection = getConnection("jdbc:mysql://", "localhost", 3306, "root", "");
         st = createStatement();
-        if (executeUpdate("USE nowaBaza;") == 0)
+        if (executeUpdate("USE BazaDoAnkiety;") == 0)
             System.out.println("Baza wybrana");
         else {
             System.out.println("Baza nie istnieje! Tworzymy baze: ");
-            if (executeUpdate("create Database nowaBaza;") == 1)
+            if (executeUpdate("create Database BazaDoAnkiety;") == 1)
                 System.out.println("Baza utworzona");
             else
                 System.out.println("Baza nieutworzona!");
-            if (executeUpdate("USE nowaBaza;") == 0)
+            if (executeUpdate("USE BazaDoAnkiety;") == 0)
                 System.out.println("Baza wybrana");
             else
                 System.out.println("Baza niewybrana!");
