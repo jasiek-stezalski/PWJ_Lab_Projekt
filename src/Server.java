@@ -1,7 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
+import java.net.SocketException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -12,8 +12,6 @@ public class Server {
     public static void main(String[] args) throws IOException {
 
         // Connect with database
-        JDBC dataBase = new JDBC();
-        dataBase.connect();
         ServerSocket serverSocket = null;
 
         try {
@@ -22,17 +20,25 @@ public class Server {
 
             ExecutorService executor = Executors.newCachedThreadPool();
 
+            executor.execute(new ExitRunnable(serverSocket));
+
+            System.out.println("Server został uruchomiony");
+
             // Wait for new client
             while (true) {
-                Socket socket = serverSocket.accept();
-                executor.execute(new ServerRunnable(socket, dataBase));
+                try {
+                    Socket socket = serverSocket.accept();
+                    executor.execute(new ServerRunnable(socket));
+                } catch (SocketException e) {
+                    break;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            serverSocket.close();
-            dataBase.closeConnection();
+
             System.out.println("\nServer został wyłączony");
+            System.exit(0);
         }
     }
 }

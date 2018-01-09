@@ -192,7 +192,7 @@ public class JDBC {
                     .println("Blad przy zamykaniu polaczenia z baza! " + e.getMessage() + ": " + e.getErrorCode());
             System.exit(4);
         }
-        System.out.print(" zamkniecie OK");
+        System.out.print(" zamkniecie OK\n");
     }
 
 }
