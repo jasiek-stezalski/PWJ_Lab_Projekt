@@ -15,15 +15,13 @@ public class ServerRunnable implements Runnable {
     private JDBC dataBase;
     private String idKlienta;
 
-    public ServerRunnable(Socket socket) {
+    public ServerRunnable(Socket socket, JDBC dataBase) {
         this.socket = socket;
-        dataBase = new JDBC();
-        dataBase.connect();
+        this.dataBase = dataBase;
         // Generate id for new client
         idKlienta = String.valueOf(UUID.randomUUID());
         System.out.println("Nowy klient o ID: " + idKlienta);
     }
-
     @Override
     public void run() {
         try {
@@ -80,7 +78,6 @@ public class ServerRunnable implements Runnable {
             out.println("exit");
             out.close();
             in.close();
-            dataBase.closeConnection();
             System.out.println("Zakończono połączenie z klientem o ID: " + idKlienta);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -88,4 +85,5 @@ public class ServerRunnable implements Runnable {
             e.printStackTrace();
         }
     }
+
 }
